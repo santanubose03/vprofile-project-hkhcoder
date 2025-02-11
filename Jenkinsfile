@@ -17,8 +17,8 @@ pipeline{
         registryCredentials = "ecr:us-east-1:AWS_CREDS" 
         vprofileRegistry = "https://180294204145.dkr.ecr.us-east-1.amazonaws.com"
         imageName = "180294204145.dkr.ecr.us-east-1.amazonaws.com/vprofileappimg"
-        clusterName = 'vprofileCluster'
-        serviceName = 'vprofileAppSRV'
+        clusterName = 'vprofile'
+        serviceName = 'vprofileappsrv'
     }
 
    
