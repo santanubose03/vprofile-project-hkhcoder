@@ -109,7 +109,7 @@ pipeline{
                nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
-                    nexusUrl: "${NEXUS_URL}:8081",
+                    nexusUrl: "107.22.86.168:8081",
                     groupId: 'vprofile',
                     version: "${env.BUILD_NUMBER}-${env.BUILD_TIMESTAMP}",
                     repository: 'vprofile-app-maven',
