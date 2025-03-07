@@ -52,8 +52,8 @@ services:
          - front-tier                    
 
 volumes:
-  - vpro-db-data: {}
-  - vpro-app-data: {}
+   vpro-db-data: {}
+   vpro-app-data: {}
 networks:
-  -  front-tier: {}
-  -  back-tier: {}
+   front-tier: {}
+   back-tier: {}
