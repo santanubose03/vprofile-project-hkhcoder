@@ -21,9 +21,7 @@ services:
       networks:
          - back-tier  
    vprormq01:
-      build:
-        context: ./Docker-files/rabbitmq
-      image: santanubose03/vprofilerqm
+     image: rabbitmq:4.0
       container_name: vprormq01
       ports:
         - "5672:5672"  
