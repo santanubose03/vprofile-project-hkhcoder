@@ -1,0 +1,61 @@
+services:
+   vprodb:
+      build:
+         context: ./Docker-files/db/
+      image: santanubose03/vprofiledb
+      container_name: vprodb
+      ports:
+        - "3306:3306"
+      volumes:
+         - vpro-db-data:/var/lib/mysql
+      environment:
+         - MYSQL_ROOT_PASSWORD=admin123
+      networks:
+         - back-tier    
+   
+   vprocache01:
+      image: memcached:1.6
+      container_name: vprocache01
+      ports:
+        - "11211:11211"
+      networks:
+         - back-tier  
+   vprormq01:
+      build:
+        context: ./Docker-files/rabbitmq
+      image: santanubose03/vprofilerqm
+      container_name: vprormq01
+      ports:
+        - "5672:5672"  
+      networks:
+         - back-tier   
+
+   vproapp:
+      build:
+         context: ./Docker-files/app/
+      image: santanubose03/vprofileapp
+      container_name: vproapp
+      ports:
+        - "8080:8080"
+      volumes:
+         - vpro-app-data:/usr/local/tomcat/webapps/    
+      networks:
+         - front-tier
+         - back-tier
+
+   vproweb:
+      build:
+         context: ./Docker-files/web/
+      image: santanubose03/vprofileweb
+      container_name: vproweb
+      ports:
+        - "80:80"   
+      networks:
+         - front-tier                    
+
+volumes:
+  - vpro-db-data: {}
+  - vpro-app-data: {}
+networks:
+  -  front-tier: {}
+  -  back-tier: {}
