@@ -21,7 +21,7 @@ services:
       networks:
          - back-tier  
    vprormq01:
-     image: rabbitmq:4.0
+      image: rabbitmq:4.0
       container_name: vprormq01
       ports:
         - "5672:5672"  
