@@ -1,6 +1,7 @@
 FROM maven:3.9.9-eclipse-temurin-21-jammy AS build_image
-RUN git clone https://github.com/santanubose03/vprofile-project-hkhcoder.git
-RUN cd vprofile-project-hkhcoder && git checkout local && mvn install
+WORKDIR  /vprofile-project-hkhcoder
+COPY . .
+RUN mvn install
 
 FROM tomcat:10-jdk21
 LABEL "Author"="Santanu"
