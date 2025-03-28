@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+   name: vprormq01
+   labels:
+     app: vprormq01
+
+spec:
+   containers:
+    - name: vprormqcontainer
+      image: rabbitmq:4.0
+      ports:
+        - name: vprodrmq-port
+          containerPort: 5672
+
+...

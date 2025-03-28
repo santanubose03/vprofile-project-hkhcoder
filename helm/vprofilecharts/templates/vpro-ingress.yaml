@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vpro-ingress
+  namespace: default  # Namespace of your application
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx  # Ensure this matches your ingress controller class
+  rules:
+    - host: vprofile.homelycravingz.shop  # Replace with your domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vproapp-service  # Name of your service in 'default' namespace
+                port:
+                  number: 8080
+#           - path: /login
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: vproappfix-service  # Name of your service in 'default' namespace
+#                 port:
+#                   number: 8080          
+# 
