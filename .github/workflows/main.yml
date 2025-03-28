@@ -1,0 +1,105 @@
+name: vprofile actions
+on: workflow_dispatch
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: vproapp
+  EKS_CLUSTER: vprofile-eks
+jobs:
+  Testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: source code checkout
+        uses: actions/checkout@v4
+
+      - name: maven test
+        run: mvn test
+
+      - name: maven checkstyle
+        run: mvn checkstyle:checkstyle
+        
+        #setup java 
+      - name: setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '11'
+
+      - name: setup sonarqube
+        uses:  warchant/setup-sonar-scanner@v7
+
+      - name: Sonarqube scan      
+        run: sonar-scanner
+           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+           -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+           -Dsonar.sources=src/
+           -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/
+           -Dsonar.junit.reportsPath=target/surefire-reports/
+           -Dsonar.jacoco.reportsPath=target/jacoco.exec
+           -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
+
+      - name:  SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          pollingTimeoutSec: 600
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  Build_and_Publish:
+    runs-on: ubuntu-latest
+    needs: Testing
+    steps:
+      - name: source code checkout
+        uses: actions/checkout@v4
+
+      - name: upload image to ECR
+        uses: appleboy/docker-ecr-action@master
+        with:
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: ${{ secrets.REGISTRY }}
+          repo: ${{ env.ECR_REPOSITORY }}
+          region: us-east-1
+          tags: latest,${{ github.run_number }}
+          daemon_off: false
+          dockerfile: ./Docker-files/app/Dockerfile
+          context: ./
+
+  Deploy_to_eks:
+     runs-on: ubuntu-latest
+     needs: Build_and_Publish
+     steps:
+      - name: code checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: get kube config file
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER }} 
+
+      - name: print kube config file
+        run: cat ~/.kube/config
+
+      - name:  login to ECR
+        run: kubectl create secret docker-registry regcred --docker-server=${{ secrets.REGISTRY}} --docker-username=AWS --docker-password=$(aws ecr get-login-password)
+
+      - name: Deploy Helm
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION}}
+          cluster-name: ${{ env.EKS_CLUSTER}}
+          #config-files: .github/values/dev.yaml
+          chart-path: helm/vprofilecharts
+          namespace: default
+          values: appimg=${{ secrets.REGISTRY }}/${{ env.ECR_REPOSITORY }},apptag=${{ github.run_number }}
+          name: vprofile-stack

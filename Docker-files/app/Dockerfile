@@ -1,7 +1,8 @@
 FROM maven:3.9.9-eclipse-temurin-21-jammy AS build_image
 WORKDIR  /vprofile-project-hkhcoder
 COPY . .
-RUN mvn install
+RUN ls -ltr
+RUN  mvn install
 
 FROM tomcat:10-jdk21
 LABEL "Author"="Santanu"
