@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_santanubose03_vprofile_project_hkhcoder_1753467800422-pr-trigger-input-set
+  identifier: Build_santanubose03_vprofile_project_hkhcoder_1753467800422prtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_santanubose03_vprofile_project_hkhcoder_1753467800422
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
