@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_santanubose03_vprofile_project_hkhcoder_1753467800422-push-trigger-input-set
+  identifier: Build_santanubose03_vprofile_project_hkhcoder_1753467800422pushtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_santanubose03_vprofile_project_hkhcoder_1753467800422
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
