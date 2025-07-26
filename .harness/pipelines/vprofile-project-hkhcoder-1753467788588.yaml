@@ -23,7 +23,7 @@ pipeline:
                   identifier: mvn
                   name: mvn build
                   spec:
-                    command: mvn clean build
+                    command: mvn clean install
                   timeout: ""
                   type: Run
           platform:
