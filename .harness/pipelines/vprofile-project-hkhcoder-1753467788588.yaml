@@ -20,10 +20,10 @@ pipeline:
           execution:
             steps:
               - step:
-                  identifier: echo
-                  name: echo
+                  identifier: mvn
+                  name: mvn build
                   spec:
-                    command: echo hello world
+                    command: mvn clean build
                   timeout: ""
                   type: Run
           platform:
