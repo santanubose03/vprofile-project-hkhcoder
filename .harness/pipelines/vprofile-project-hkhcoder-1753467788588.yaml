@@ -30,8 +30,7 @@ pipeline:
             arch: Amd64
             os: Linux
           runtime:
-            spec: {}
             type: Docker
             spec:
-            image: maven:3.8.6-openjdk-17
+              image: maven:3.8.6-openjdk-17
         type: CI
