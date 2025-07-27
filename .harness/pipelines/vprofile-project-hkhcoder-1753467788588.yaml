@@ -34,7 +34,9 @@ pipeline:
                   spec:
                     command: |
                       mkdir -p /harness/artifacts
-                      cp target/*.war /harness/artifacts/   
+                      cp target/*.war /harness/artifacts/
+                      cd /harness/artifacts
+                      ls -ltr
                   
           platform:
             arch: Amd64
