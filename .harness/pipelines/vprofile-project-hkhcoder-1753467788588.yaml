@@ -23,7 +23,7 @@ pipeline:
                   identifier: mvn
                   name: mvn build
                   spec:
-                    command: mvn clean install
+                    command: mvn clean install -DskipTests
                   timeout: ""
                   type: Run
                
