@@ -26,6 +26,16 @@ pipeline:
                     command: mvn clean install
                   timeout: ""
                   type: Run
+               
+              - step:
+                  identifier: upload_artifact
+                  name: Upload WAR Artifact
+                  type: Run
+                  spec:
+                    command: |
+                      mkdir -p /harness/artifacts
+                      cp target/*.war /harness/artifacts/   
+                  
           platform:
             arch: Amd64
             os: Linux
